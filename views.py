@@ -1,3 +1,4 @@
+import json
 import random
 
 from flask import render_template, request
@@ -5,7 +6,7 @@ from flask import render_template, request
 from app import app
 from models import db, Tutor, Goal
 from forms import BookingForm, RequestForm, SortTutorsForm
-from func import get_data_from_db, save_request
+from func import get_data_from_db
 
 
 @app.route("/")
@@ -254,3 +255,15 @@ def render_bad_request(
     """Handling 400 error"""
 
     return render_template("error.html", msg=msg), 400
+
+
+def save_request(request, file_name):
+    """Saves user request into file_name"""
+    try:
+        with open(file_name, encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        data = []
+    data.append(request)
+    with open(file_name, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4, separators=(",", ": "))

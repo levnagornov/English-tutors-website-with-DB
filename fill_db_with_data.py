@@ -1,4 +1,3 @@
-from func import get_data_from_db
 from models import *
 
 

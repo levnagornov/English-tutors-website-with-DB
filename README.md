@@ -1,4 +1,4 @@
-# English-tutors-flask-app
+# English-tutors-flask-app v2 with SQL datebase
 
 It's my second app on the Flask learning course. I make site of english language tutors.
 

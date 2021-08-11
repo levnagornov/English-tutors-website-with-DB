@@ -4,3 +4,4 @@ venv/
 *.pyc
 booking.json
 request.json
+.idea/

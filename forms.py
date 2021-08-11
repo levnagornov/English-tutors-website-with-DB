@@ -2,8 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, RadioField, SubmitField, HiddenField, SelectField
 from wtforms.validators import InputRequired
 
-from func import get_data_from_db
-
 
 class BookingForm(FlaskForm):
     """Booking form for a class with a tutor"""
