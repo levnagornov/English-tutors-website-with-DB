@@ -41,8 +41,20 @@ d = {
     "programming": 5
 }
 for tutor in get_data_from_db("tutors"):
-    print(tutor['id'], tutor['goals'])
+    print(tutor['id']+1, tutor['goals'])
+    q_tutor = db.session.query(Tutor).get(tutor['id']+1)
+    for tutor_goal in tutor['goals']:
+        q_goal = db.session.query(Goal).get(d[tutor_goal])
+        print(f"у {q_tutor.id} {q_tutor.name} есть цель {q_goal.name} с id {q_goal.id}")
+        q_tutor.goals.append(q_goal)
+        db.session.add(q_tutor)
+db.session.commit()        
 
+# tutor = Tutor()
+# goal = Goal()
+# tutor.goals.append(goal)
+# db.session.add(tutor)
+# db.session.commit()
 
 
 '''
