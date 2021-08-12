@@ -126,26 +126,21 @@ def render_all():
     Also contains request for a tutor search form.
     By default shows list of tutors with random order.
     """
-    # getting data from DB for HTML template
-    all_tutors = db.session.query(Tutor).all()
-
-    # by default we show all tutors in random order
-    sorted_tutors = random.sample(all_tutors, len(all_tutors))
-
+    
+    tutors = db.session.query(Tutor).order_by(func.random()).all()
     form = SortTutorsForm()
-
     # getting sort-mode and showing page with sorted tutors by certain sort-mode
     if request.method == "POST":
         sort_by = form.sort_by.data
         if sort_by == "high_rating_first":
-            sorted_tutors.sort(key=lambda x: x["rating"], reverse=True)
+            tutors = db.session.query(Tutor).order_by(Tutor.rating.desc()).all()
         elif sort_by == "high_price_first":
-            sorted_tutors.sort(key=lambda x: x["price"], reverse=True)
+            tutors = db.session.query(Tutor).order_by(Tutor.price.desc()).all()
         elif sort_by == "low_price_first":
-            sorted_tutors.sort(key=lambda x: x["price"])
-        return render_template("all.html", all_tutors=sorted_tutors, form=form)
+            tutors = db.session.query(Tutor).order_by(Tutor.price).all()
 
-    return render_template("all.html", all_tutors=sorted_tutors, form=form)
+    return render_template("all.html", tutors=tutors, form=form)
+
 
 
 @app.route("/goals/<int:goal_id>/")
