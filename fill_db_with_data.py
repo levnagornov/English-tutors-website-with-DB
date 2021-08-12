@@ -30,33 +30,6 @@ def get_data_from_db(option: str = "all") -> dict[str, Any]:
             return db[3]
 
 
-
-#fill DaysOfWeek
-
-d = {
-    "travel": 1,
-    "study": 2,
-    "work": 3,
-    "relocate": 4,
-    "programming": 5
-}
-for tutor in get_data_from_db("tutors"):
-    print(tutor['id']+1, tutor['goals'])
-    q_tutor = db.session.query(Tutor).get(tutor['id']+1)
-    for tutor_goal in tutor['goals']:
-        q_goal = db.session.query(Goal).get(d[tutor_goal])
-        print(f"у {q_tutor.id} {q_tutor.name} есть цель {q_goal.name} с id {q_goal.id}")
-        q_tutor.goals.append(q_goal)
-        db.session.add(q_tutor)
-db.session.commit()        
-
-# tutor = Tutor()
-# goal = Goal()
-# tutor.goals.append(goal)
-# db.session.add(tutor)
-# db.session.commit()
-
-
 '''
 #fill TimeForPractice
 time_for_practice = get_data_from_db("time_for_practice")
@@ -105,4 +78,23 @@ for _, value in get_data_from_db("days_of_week").items():
     )
     db.session.add(day)
     count += 1
+db.session.commit()"""
+
+
+"""#fill tutors_goals many-to-many
+d = {
+    "travel": 1,
+    "study": 2,
+    "work": 3,
+    "relocate": 4,
+    "programming": 5
+}
+for tutor in get_data_from_db("tutors"):
+    print(tutor['id']+1, tutor['goals'])
+    q_tutor = db.session.query(Tutor).get(tutor['id']+1)
+    for tutor_goal in tutor['goals']:
+        q_goal = db.session.query(Goal).get(d[tutor_goal])
+        print(f"у {q_tutor.id} {q_tutor.name} есть цель {q_goal.name} с id {q_goal.id}")
+        q_tutor.goals.append(q_goal)
+        db.session.add(q_tutor)
 db.session.commit()"""

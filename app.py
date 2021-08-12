@@ -6,9 +6,11 @@ from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+from sqlalchemy.sql import func
+
 from config import Config
 from forms import BookingForm, RequestForm, SortTutorsForm
-from sqlalchemy import MetaData
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -85,7 +87,6 @@ class Request(db.Model):
     goal_id = db.Column(db.Integer, db.ForeignKey("goals.id"), nullable=False)
 
 
-
 class TimeForPractice(db.Model):
     """This is time for practice SQLAlchemy model.
     TimeForPractice is related with Request (many-to-one).
@@ -113,17 +114,10 @@ def render_index():
     Contains 6 random tutors, all possible education goals, request for a tutor search form.
     """
 
-    # getting data from DB for HTML template
-    all_tutors = db.session.query(Tutor).all()
-    all_goals = db.session.query(Goal).all()
+    random_tutors = db.session.query(Tutor).order_by(func.random()).limit(6)
+    goals = db.session.query(Goal).all()
 
-    # generating list of 6 random tutors
-    #TODO get random 6 from SQL database
-    random_tutors = random.sample(list(all_tutors), k=6)
-
-    return render_template(
-        "index.html", random_tutors=random_tutors, all_goals=all_goals
-    )
+    return render_template("index.html", random_tutors=random_tutors, goals=goals)
 
 
 @app.route("/all/", methods=["GET", "POST"])
@@ -154,18 +148,15 @@ def render_all():
     return render_template("all.html", all_tutors=sorted_tutors, form=form)
 
 
-@app.route("/goals/<goal>/")
-def render_goal(goal):
+@app.route("/goals/<int:goal_id>/")
+def render_goal(goal_id):
     """Page with a list of tutors by certain education goal."""
 
-    # getting data from DB for HTML template
-    all_tutors = db.session.query(Tutor).all()
-    all_goals = db.session.query(Goal).all()
-    tutors_by_goal = [tutor for tutor in all_tutors if goal in tutor["goals"]]
+    goal = db.session.query(Goal).get(goal_id)
+    if goal is None:
+        return render_not_found(404)
 
-    return render_template(
-        "goal.html", goal=goal, tutors_by_goal=tutors_by_goal, all_goals=all_goals
-    )
+    return render_template("goal.html", goal=goal, tutors_by_goal=goal.tutors)
 
 
 @app.route("/profiles/<int:tutor_id>/")

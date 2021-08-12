@@ -7,9 +7,8 @@
   <div class="text-center mb-5">
     <div class="btn-group mx-auto mb-0" role="group" aria-label="Basic example">
 
-      {% for goal_eng, goal_disc in all_goals.items() %}
-        {% set goal_rus, goal_pic = goal_disc %}
-        <a href="{{ url_for('render_goal', goal=goal_eng) }}" class="btn btn-outline-secondary">{{ goal_pic }} {{ goal_rus }}</a>
+      {% for goal in goals %}
+        <a href="{{ url_for('render_goal', goal_id=goal.id) }}" class="btn btn-outline-secondary">{{ goal.emoji }} {{ goal.name }}</a>
       {% endfor %}
 
     </div>
