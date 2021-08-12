@@ -1,8 +1,8 @@
-# English-tutors-flask-app v2 with SQL datebase
+# English-tutors-flask-app v2 with SQL database
 
 It's my second app on the Flask learning course. I make site of english language tutors.
 
-Using dependencies: Flask + WTForms, Bootstrap 4. As a database I will use JSON file. But also there'll be a version with SQLAlchemy and SQLite db on the other branch.
+Using dependencies: Flask + WTForms, Bootstrap 4. As a database I will SQLite
 
 The site has:
 * '/' - main page;
