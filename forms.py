@@ -21,20 +21,11 @@ class RequestForm(FlaskForm):
 
     goal = RadioField(
         "Какая цель занятий?",
-        choices=[
-            (key, " ".join(value))
-            for key, value in get_data_from_db(option="goals").items()
-        ],
         default="travel",
     )
 
     time_for_practice = RadioField(
         "Сколько времени есть?",
-        choices=[
-            (key, value)
-            for key, value in get_data_from_db(option="time_for_practice") \
-            .items()
-        ],
         default="limit1_2",
     )
 
