@@ -10,10 +10,10 @@
           {{ form.csrf_token }}
 
         <div class="card-body text-center pt-5">
-          <img src="{{ tutor_info.picture }}" class="mb-3" width="95" alt="">
-          <h2 class="h5 card-title mt-2 mb-2">{{ tutor_info.name }}</h2>
+          <img src="{{ tutor.picture }}" class="mb-3" width="95" alt="">
+          <h2 class="h5 card-title mt-2 mb-2">{{ tutor.name }}</h2>
           <p class="my-1">Запись на пробный урок</p>
-          <p class="my-1">{{ all_days_of_week[class_day][2] }}, {{ time }}</p>
+          <p class="my-1">{{ class_day.rus_full_name }}, {{ time }}</p>
         </div>
         <hr />  
         <div class="card-body mx-3">

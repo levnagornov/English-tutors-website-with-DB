@@ -239,8 +239,8 @@ def render_request_done():
     return render_not_found(404)
 
 
-@app.route("/booking/<tutor_id>/<class_day>/<time>/")
-def render_booking(tutor_id, class_day, time):
+@app.route("/booking/<int:tutor_id>/<int:class_day_id>/<time>/")
+def render_booking(tutor_id, class_day_id, time):
     """Booking page.
     This page allows you to book a class with a certain tutor on a chosen day and time.
     Requires:
@@ -250,38 +250,28 @@ def render_booking(tutor_id, class_day, time):
 
     Additional info from db - all_days_of_week and all_tutors.
     """
-    # getting data from DB for HTML template
-    all_days_of_week = db.session.query(DaysOfWeek).all()
-    all_tutors = db.session.query(Tutor).all()
-
-    # getting data about certain tutor among all tutors for a temlate
-    try:
-        tutor_info = [
-            tutor
-            for tutor in all_tutors
-            if tutor.get("id", "No match data") == int(tutor_id)
-        ][0]
-    except IndexError:
+    
+    class_day = db.session.query(DaysOfWeek).get(class_day_id)
+    tutor = db.session.query(Tutor).get(tutor_id)
+    # checking if user fill url manually with mistakes
+    if None in (tutor, class_day):
         return render_not_found(404)
 
-    # TODO: add this to TRY block above. Check class_day and time by tutor_id
-    # handling error in day of week spelling
-    # if class_day not in []:
-    #     return render_not_found(404)
+    shedule = tutor.free.get(class_day.eng_short_name)
+    if shedule.get(time) == False:
+        return render_not_found(404)
 
-    # assign hidden fields of form with passed from URL data
     form = BookingForm()
-    form.class_day.data = class_day
+    # assign hidden fields of form with passed from URL data
+    form.class_day.data = class_day_id
     form.time.data = time
     form.tutor_id.data = tutor_id
 
     return render_template(
         "booking.html",
-        tutor_info=tutor_info,
-        tutor_id=tutor_id,
+        tutor=tutor,
         class_day=class_day,
         time=time,
-        all_days_of_week=all_days_of_week,
         form=form,
     )
 
@@ -292,39 +282,24 @@ def render_booking_done():
 
     form = BookingForm()
     if request.method == "POST" and form.validate_on_submit():
-        # saving booking-request in a json file
-        client_name = form.name.data
-        client_phone = form.phone.data
-        class_day = form.class_day.data
-        time = form.time.data
-        tutor_id = form.tutor_id.data
-        req = {
-            "client_name": client_name,
-            "client_phone": client_phone,
-            "class_day": class_day,
-            "time": time,
-            "tutor_id": tutor_id,
-        }
-        save_request(req, file_name="booking.json")
+        booking = Booking(
+            client_name=form.name.data, 
+            client_phone=form.phone.data,
+            time=form.time.data,
+            class_day=form.class_day.data,
+            tutor_id=form.tutor_id.data
+        )
+        db.session.add(booking)
+        db.session.commit()
 
-        # getting data from DB for HTML template
-        all_days_of_week = db.session.query(DaysOfWeek).all()
-        all_tutors = db.session.query(Tutor).all()
-        tutor_info = [
-            tutor
-            for tutor in all_tutors
-            if tutor.get("id", "No match data") == int(tutor_id)
-        ][0]
+        class_day = db.session.query(DaysOfWeek).get(form.class_day.data)
+        tutor = db.session.query(Tutor).get(form.tutor_id.data)
 
         return render_template(
             "booking_done.html",
-            all_days_of_week=all_days_of_week,
+            tutor=tutor,
             class_day=class_day,
-            time=time,
-            client_name=client_name,
-            client_phone=client_phone,
-            tutor_info=tutor_info,
-            tutor_id=tutor_id,
+            form=form
         )
 
     # Restrict access if /booking/ was ignored

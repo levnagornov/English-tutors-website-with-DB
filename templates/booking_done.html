@@ -13,10 +13,10 @@
         </div>
         <hr />
         <div class="card-body mx-5">
-          <p><b>Тема:</b> Пробный урок c преподавателем <i>{{ tutor_info.name }}</i></p>
-          <p><b>Дата:</b> {{ all_days_of_week[class_day][2] }} в {{ time }}</p>
-          <p><b>Ваше имя:</b> {{ client_name }}</p>
-          <p><b>Телефон:</b> {{ client_phone }}</p>
+          <p><b>Тема:</b> Пробный урок c преподавателем <b><i>{{ tutor.name }}</i></b></p>
+          <p><b>Дата:</b> {{ class_day.rus_full_name }} в {{ form.time.data }}</p>
+          <p><b>Ваше имя:</b> {{ form.name.data }}</p>
+          <p><b>Телефон:</b> {{ form.phone.data }}</p>
         </div>
       </div>
     </div>
