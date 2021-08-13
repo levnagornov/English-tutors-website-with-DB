@@ -126,7 +126,7 @@ def render_all():
     Also contains request for a tutor search form.
     By default shows list of tutors with random order.
     """
-    
+
     tutors = db.session.query(Tutor).order_by(func.random()).all()
     form = SortTutorsForm()
     # getting sort-mode and showing page with sorted tutors by certain sort-mode
@@ -158,23 +158,14 @@ def render_goal(goal_id):
 def render_tutor_profile(tutor_id):
     """Page with info about a certain tutor."""
 
-    # getting data from DB for HTML template
-    all_tutors = db.session.query(Tutor).all()
-    days_of_week = db.session.query(DaysOfWeek).all()
-
-    # getting tutor info by tutor_id
-    try:
-        tutor_info = [
-            tutor
-            for tutor in all_tutors
-            if tutor.get("id", "No match data") == int(tutor_id)
-        ][0]
-    except IndexError:
+    tutor = db.session.query(Tutor).get(tutor_id)
+    if tutor is None:
         return render_not_found(404)
+        
+    days_of_week = db.session.query(DaysOfWeek).order_by(DaysOfWeek.id).all()
 
     return render_template(
-        "profile.html", tutor_info=tutor_info, days_of_week=days_of_week
-    )
+        "profile.html", tutor=tutor, days_of_week=days_of_week)
 
 
 @app.route("/request/")
@@ -364,19 +355,6 @@ def render_bad_request(
     """Handling 400 error"""
 
     return render_template("error.html", msg=msg), 400
-
-
-def save_request(request, file_name):
-    """Saves user request into file_name"""
-    try:
-        with open(file_name, encoding="utf-8") as f:
-            data = json.load(f)
-    except FileNotFoundError:
-        data = []
-    data.append(request)
-    with open(file_name, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4, separators=(",", ": "))
-
 
 
 if __name__ == "__main__":
