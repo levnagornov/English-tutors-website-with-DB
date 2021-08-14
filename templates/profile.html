@@ -22,7 +22,7 @@
               {% if tutor.free[day.eng_short_name].values()|select|first %}
                 {% for time, tutor_is_free in tutor.free[day.eng_short_name].items() %}
                   {% if tutor_is_free %}
-                    <a href="{{ url_for('render_booking', tutor_id=tutor.id, class_day_id=day.id, time=time) }}" class="btn btn-outline-success mr-2 my-2"
+                    <a href="{{ url_for('view_blp.render_booking', tutor_id=tutor.id, class_day_id=day.id, time=time) }}" class="btn btn-outline-success mr-2 my-2"
                     >{{ time }} свободно</a>
                   {% endif %}
                 {% endfor %}
