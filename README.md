@@ -10,8 +10,7 @@ The site has:
 * '/profiles/<tutor_id>/' - page of a certain tutor;
 * '/goals/\<goal>/' - page with relevant tutors by certain goal;
 * '/booking/<tutor_id>/<class_day>/\<time>/' - booking page and booking done page;
-* '/request/' - page of request for mathing a relevant tutor and request done page;
-
 
 < 🔻 *in progress* 🔻 >
+* '/request/' - page of request for mathing a relevant tutor and request done page;
 * '/admin/' - admin's page with logging in for creating/editing/deleting tutors, goals and etc.;
