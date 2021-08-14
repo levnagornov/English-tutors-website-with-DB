@@ -2,7 +2,7 @@
 
 It's my second app on the Flask learning course. I make site of english language tutors.
 
-Using dependencies: Flask + WTForms, Bootstrap 4. As a database I will SQLite
+Using dependencies: Flask + WTForms, Bootstrap 4. As a database I will use SQLite
 
 The site has:
 * '/' - main page;
