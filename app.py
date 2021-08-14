@@ -142,7 +142,6 @@ def render_all():
     return render_template("all.html", tutors=tutors, form=form)
 
 
-
 @app.route("/goals/<int:goal_id>/")
 def render_goal(goal_id):
     """Page with a list of tutors by certain education goal."""
@@ -176,16 +175,17 @@ def render_request():
     times_for_practice = db.session.query(TimeForPractice).all()
 
     form = RequestForm()
-
     form.goal.choices = [
-        (key, " ".join(value))
-        for key, value in goals.items()
+        (goal.id, ' '.join((goal.name, goal.emoji))) 
+        for goal in goals
     ]
-    form.time_for_practice.choices=[
-        (key, value)
-        for key, value in times_for_practice.items()
+    form.time_for_practice.choices = [
+        (time.id, time.description) 
+        for time in times_for_practice
     ]
 
+    print(form.goal.data)
+    print(form.time_for_practice.data)
     return render_template("request.html", form=form)
 
 
@@ -193,46 +193,26 @@ def render_request():
 def render_request_done():
     """This page show only when /request/ is successfully done."""
 
-    goals = db.session.query(Goal).all()
-    times_for_practice = db.session.query(TimeForPractice).all()
-
     form = RequestForm()
-    
-    form.goal.choices = [
-        (key, " ".join(value))
-        for key, value in goals.items()
-    ]
-    form.time_for_practice.choices=[
-        (key, value)
-        for key, value in times_for_practice.items()
-    ]
-
     if request.method == "POST" and form.validate_on_submit():
-        # saving users requests in a json file
-        goal = form.goal.data
-        time_for_practice = form.time_for_practice.data
-        client_name = form.name.data
-        client_phone = form.phone.data
-        req = {
-            "client_name": client_name,
-            "client_phone": client_phone,
-            "goal": goal,
-            "time_for_practice": time_for_practice,
-        }
-        save_request(req, file_name="request.json")
+        print('request is ok')
+        request_tutor = Request(
+            client_name=form.name.data, 
+            client_phone=form.phone.data,
+            time_for_practice_id=form.time_for_practice.data,
+            goal_id=form.goal.data
+        )
+        db.session.add(request_tutor)
+        db.session.commit()
 
-        # getting data from DB for HTML template
-        all_goals = db.session.query(Goal).all()
-        all_time_for_practice = db.session.query(TimeForPractice).all()
+        goal = db.session.query(Goal).get(form.goal.data)
+        time_for_practice = db.session.query(TimeForPractice).get(form.time_for_practice.data)
 
         return render_template(
             "request_done.html",
-            all_goals=all_goals,
-            all_time_for_practice=all_time_for_practice,
             goal=goal,
             time_for_practice=time_for_practice,
-            client_name=client_name,
-            client_phone=client_phone,
+            form=form
         )
 
     # Restrict access if /request/ was ignored

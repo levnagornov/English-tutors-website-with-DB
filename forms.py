@@ -21,14 +21,12 @@ class RequestForm(FlaskForm):
 
     goal = RadioField(
         "Какая цель занятий?",
-        default="travel",
+        default="1"
     )
-
     time_for_practice = RadioField(
         "Сколько времени есть?",
-        default="limit1_2",
+        default="1"
     )
-
     name = StringField("Вас зовут", [InputRequired("Пожалуйста, введите ваше имя")])
     phone = StringField(
         "Ваш телефон", [InputRequired("Пожалуйста, введите ваш номер телефона")]
