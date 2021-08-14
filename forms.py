@@ -9,32 +9,18 @@ class BookingForm(FlaskForm):
     tutor_id = HiddenField()
     class_day = HiddenField()
     time = HiddenField()
-    name = StringField("Вас зовут", [InputRequired("Пожалуйста, введите ваше имя")])
-    phone = StringField(
-        "Ваш телефон", [InputRequired("Пожалуйста, введите ваш номер телефона")]
-    )
+    name = StringField("Вас зовут", [InputRequired()])
+    phone = StringField("Ваш телефон", [InputRequired()])
     submit = SubmitField("Записаться на пробный урок")
 
 
 class RequestForm(FlaskForm):
     """Request form for a tutor search"""
 
-    goal = RadioField(
-        "Какая цель занятий?",
-        default=1
-    )
-    time_for_practice = RadioField(
-        "Сколько времени есть?",
-        default=1
-    )
-    name = StringField(
-        "Вас зовут", 
-        [InputRequired()]
-    )
-    phone = StringField(
-        "Ваш телефон", 
-        [InputRequired()]
-    )
+    goal = RadioField("Какая цель занятий?", default=1)
+    time_for_practice = RadioField("Сколько времени есть?", default=1)
+    name = StringField("Вас зовут", [InputRequired()])
+    phone = StringField("Ваш телефон", [InputRequired()])
     submit = SubmitField("Найдите мне преподавателя!")
 
 

@@ -62,11 +62,10 @@ def render_tutor_profile(tutor_id):
     tutor = db.session.query(Tutor).get(tutor_id)
     if tutor is None:
         return render_page_not_found(404)
-        
+
     days_of_week = db.session.query(DaysOfWeek).order_by(DaysOfWeek.id).all()
 
-    return render_template(
-        "profile.html", tutor=tutor, days_of_week=days_of_week)
+    return render_template("profile.html", tutor=tutor, days_of_week=days_of_week)
 
 
 @view_blp.route("/request/")
@@ -78,10 +77,10 @@ def render_request():
 
     form = RequestForm()
     form.goal.choices = [
-        (goal.id, ' '.join((goal.name, goal.emoji))) 
+        (goal.id, " ".join((goal.name, goal.emoji))) 
         for goal in goals
     ]
-    
+
     form.time_for_practice.choices = [
         (time.id, time.description) 
         for time in times_for_practice
@@ -90,32 +89,35 @@ def render_request():
     return render_template("request.html", form=form)
 
 
+# DOESN'T WORK validate_on_submit()!!!!!!!
 @view_blp.route("/request_done/", methods=["GET", "POST"])
 def render_request_done():
     """This page show only when /request/ is successfully done."""
 
     form = RequestForm()
-    #DOESN'T WORK validate_on_submit()
-    if not (request.method == "POST" and form.validate_on_submit()):
+    # Restrict access if /request/ was ignored
+    # DOESN'T WORK validate_on_submit()!!!!!!!!
+    if not (
+        request.method == "POST" and form.validate_on_submit()
+    ):
         return render_page_not_found(404)
 
     request_tutor = Request(
-        client_name=form.name.data, 
+        client_name=form.name.data,
         client_phone=form.phone.data,
         time_for_practice_id=form.time_for_practice.data,
-        goal_id=form.goal.data
+        goal_id=form.goal.data,
     )
     db.session.add(request_tutor)
     db.session.commit()
 
     goal = db.session.query(Goal).get(form.goal.data)
-    time_for_practice = db.session.query(TimeForPractice).get(form.time_for_practice.data)
+    time_for_practice = db.session.query(TimeForPractice).get(
+        form.time_for_practice.data
+    )
 
     return render_template(
-        "request_done.html",
-        goal=goal,
-        time_for_practice=time_for_practice,
-        form=form
+        "request_done.html", goal=goal, time_for_practice=time_for_practice, form=form
     )
 
 
@@ -125,12 +127,11 @@ def render_booking(tutor_id, class_day_id, time):
     This page allows you to book a class with a certain tutor on a chosen day and time.
     Requires:
     1. tutor_id;
-    2. class_day;
+    2. class_day_id;
     3. time;
 
-    Additional info from db - all_days_of_week and all_tutors.
     """
-    
+
     class_day = db.session.query(DaysOfWeek).get(class_day_id)
     tutor = db.session.query(Tutor).get(tutor_id)
     # checking if user fill url manually with mistakes
@@ -166,11 +167,11 @@ def render_booking_done():
         return render_page_not_found(404)
 
     booking = Booking(
-        client_name=form.name.data, 
+        client_name=form.name.data,
         client_phone=form.phone.data,
         time=form.time.data,
         class_day=form.class_day.data,
-        tutor_id=form.tutor_id.data
+        tutor_id=form.tutor_id.data,
     )
     db.session.add(booking)
     db.session.commit()
@@ -179,8 +180,5 @@ def render_booking_done():
     tutor = db.session.query(Tutor).get(form.tutor_id.data)
 
     return render_template(
-        "booking_done.html",
-        tutor=tutor,
-        class_day=class_day,
-        form=form
+        "booking_done.html", tutor=tutor, class_day=class_day, form=form
     )

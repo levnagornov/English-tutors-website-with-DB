@@ -15,7 +15,7 @@ app.register_blueprint(view_blp)
 app.register_blueprint(error_blp)
 
 # CSRF token for correct work of WTForms module
-csrf = CSRFProtect(app)  
+csrf = CSRFProtect(app)
 
 # initializing database
 db.init_app(app)
@@ -23,4 +23,4 @@ migrate = Migrate(app, db, render_as_batch=True)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

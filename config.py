@@ -7,6 +7,6 @@ db_path = "sqlite:///" + current_path + "\\english_tutors.db"
 
 class Config:
     DEBUG = True
-    SECRET_KEY = 'qt8yugfdr46e57r68t79oyuhhvgcxr7dfiykjb'
+    SECRET_KEY = "qt8yugfdr46e57r68t79oyuhhvgcxr7dfiykjb"
     SQLALCHEMY_DATABASE_URI = db_path
     SQLALCHEMY_TRACK_MODIFICATIONS = False
