@@ -2,7 +2,7 @@ import os
 
 
 current_path = os.path.dirname(os.path.realpath(__file__))
-db_path = "sqlite:///" + current_path + "\\english_tutors.db"
+db_path = "sqlite:///english_tutors.db"
 
 
 class Config:

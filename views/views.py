@@ -94,9 +94,20 @@ def render_request():
 def render_request_done():
     """This page show only when /request/ is successfully done."""
 
+    goals = db.session.query(Goal).all()
+    times_for_practice = db.session.query(TimeForPractice).all()
+
     form = RequestForm()
+    form.goal.choices = [
+        (goal.id, " ".join((goal.name, goal.emoji))) 
+        for goal in goals
+    ]
+    form.time_for_practice.choices = [
+        (time.id, time.description) 
+        for time in times_for_practice
+    ]
+
     # Restrict access if /request/ was ignored
-    # DOESN'T WORK validate_on_submit()!!!!!!!!
     if not (
         request.method == "POST" and form.validate_on_submit()
     ):
